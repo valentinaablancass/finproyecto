@@ -291,7 +291,7 @@ with tab1:
             with col2:
                 st.subheader("Métricas Calculadas")
                 
-                def calcular_metricas(rendimientos):
+                #def calcular_metricas(rendimientos):
                 # Mostrar las métricas en recuadros
                 st.metric("Media", value=f"{metricas[etf_seleccionado]['Media']:.2f}")
                 st.metric("Volatilidad", value=f"{metricas[etf_seleccionado]['Volatilidad']:.2f}")
