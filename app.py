@@ -377,10 +377,12 @@ with tab1:
                     template="plotly_white"
                 )
                 return fig
-                
+            # Calcular VaR y CVaR para el ETF seleccionado
+            var_95, cvar_95 = var_cvar(rendimientos[etf_seleccionado], confianza=0.95)  
+        
             # Crear y mostrar histograma
             st.subheader("Histograma de rendimientos con VaR y CVaR")
-            histograma = crear_histograma_distribucion(rendimientos[etf_seleccionado], var_95, cvar_95, f"Distribución de rendimientos para {etf_seleccionado}")
+            histograma = histog_distr(rendimientos[etf_seleccionado], var_95, cvar_95, f"Distribución de rendimientos para {etf_seleccionado}")
             st.plotly_chart(histograma)
 
 
