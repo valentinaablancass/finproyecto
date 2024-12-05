@@ -187,6 +187,8 @@ with tab1:
         unsafe_allow_html=True,
         )
         
+        # Selección del ETF para análisis
+        etfs = ['LQD', 'EMB', 'SPY', 'EMXC', 'IAU']
         etf_seleccionado = st.selectbox("Selecciona un ETF para análisis:", options=etfs)
         st.markdown(
             """
