@@ -177,7 +177,7 @@ def calcular_metricas(rendimientos):
         "Sesgo": sesgo,
         "Curtosis": curtosis,
         "VaR": VaR,
-        "CVaR" : CVar
+        "CVaR" : CVaR
     }
 
 # Calcular métricas para cada ETF
