@@ -308,7 +308,7 @@ with tab1:
                 x=precios_normalizados.index,
                 y=precios_normalizados,
                 mode='lines',
-                name=etf_seleccionado
+                name=etf_seleccionado,
                 line=dict(color='#F46197') 
             ))
                             
