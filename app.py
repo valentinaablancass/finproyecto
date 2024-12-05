@@ -311,7 +311,7 @@ with tab1:
                 name=etf_seleccionado
                 line=dict(color='#F46197') 
             ))
-            fig.update_layout(
+                            
             fig.update_layout(
                 title=dict(
                     text="Precio Normalizado",
