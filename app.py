@@ -39,7 +39,7 @@ descripciones_etfs = {
         "moneda": "USD",
         "principales": ["Apple Inc", "NVIDIA Corp", "Microsoft Corp"],
         "paises": "Estados Unidos",
-        "estilo": "Mix (Growth/Value)",
+        "estilo": "Mix(Growth/Value)",
         "costos": "Comisión de administración: 0.03%"
     },
     "EMXC": {
