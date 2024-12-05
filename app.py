@@ -188,7 +188,6 @@ with tab1:
     )
         
     # Selección del ETF para análisis
-   # etfs = ['LQD', 'EMB', 'SPY', 'EMXC', 'IAU']
     etf_seleccionado = st.selectbox("Selecciona un ETF para análisis:", options=etfs)
     st.markdown(
         """
@@ -216,7 +215,7 @@ with tab1:
         unsafe_allow_html=True
     )
 
-     if etf_seleccionado:
+    if etf_seleccionado:
         if etf_seleccionado not in datos.columns or datos[etf_seleccionado].dropna().empty:
             st.error(f"No hay datos disponibles para {etf_seleccionado} en la ventana seleccionada.")
         else:
