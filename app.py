@@ -227,6 +227,7 @@ with tab2:
         except Exception as e:
             st.error(f"Error al calcular el promedio del tipo de cambio: {e}")
 
+# Tab 3: Comparación de Portafolios
 with tab3:
     st.header("Comparación de Portafolios")
 
@@ -249,6 +250,129 @@ with tab3:
         hovermode="x unified"
     )
     st.plotly_chart(fig)
+
+    st.subheader("Backtesting")
+
+    def backtesting_portafolio(rendimientos, pesos, inicio, fin, nivel_var=0.05):
+        rendimientos_bt = rendimientos.loc[inicio:fin]
+        rendimientos_portafolio = rendimientos_bt.dot(pesos)
+        rendimiento_acumulado = (1 + rendimientos_portafolio).cumprod()
+
+        # Estadísticas básicas
+        rendimiento_anualizado = (1 + rendimientos_portafolio.mean()) ** 252 - 1
+        volatilidad_anualizada = rendimientos_portafolio.std() * np.sqrt(252)
+        sharpe_ratio = rendimiento_anualizado / volatilidad_anualizada
+        sesgo_portafolio = rendimientos_portafolio.skew()
+        curtosis_portafolio = rendimientos_portafolio.kurt()
+
+        # Cálculo de VaR y CVaR
+        var = np.percentile(rendimientos_portafolio, nivel_var * 100)
+        cvar = rendimientos_portafolio[rendimientos_portafolio <= var].mean()
+
+        # Sortino Ratio
+        rendimientos_negativos = rendimientos_portafolio[rendimientos_portafolio < 0]
+        downside_deviation = np.sqrt((rendimientos_negativos ** 2).mean()) * np.sqrt(252)
+        sortino_ratio = rendimiento_anualizado / downside_deviation
+
+        # Drawdown
+        max_acumulado = rendimiento_acumulado.cummax()
+        drawdown = (rendimiento_acumulado / max_acumulado - 1).min()
+
+        # Diccionario con todas las estadísticas
+        estadisticas = {
+            "Rendimiento Anualizado": rendimiento_anualizado,
+            "Volatilidad Anualizada": volatilidad_anualizada,
+            "Ratio de Sharpe": sharpe_ratio,
+            "Sesgo": sesgo_portafolio,
+            "Curtosis": curtosis_portafolio,
+            "VaR ({}%)".format(int(nivel_var * 100)): var,
+            "CVaR ({}%)".format(int(nivel_var * 100)): cvar,
+            "Sortino Ratio": sortino_ratio,
+            "Máximo Drawdown": drawdown
+        }
+
+        return rendimiento_acumulado, estadisticas
+
+    # Parámetros del backtesting
+    inicio = "2021-01-01"
+    fin = "2023-12-31"
+
+    # Calcular pesos iguales
+    num_activos = rendimientos.shape[1]  
+    pesos_iguales = np.full(num_activos, 1 / num_activos)  
+
+    # Backtesting para cada portafolio
+    bt_sharpe, stats_sharpe = backtesting_portafolio(rendimientos, pesos_sharpe, inicio, fin)
+    bt_volatilidad, stats_volatilidad = backtesting_portafolio(rendimientos, pesos_volatilidad, inicio, fin)
+    bt_rendimiento, stats_rendimiento = backtesting_portafolio(rendimientos, pesos_rendimiento, inicio, fin)
+    bt_iguales, stats_iguales = backtesting_portafolio(rendimientos, pesos_iguales, inicio, fin)
+    bt_sp500, stats_sp500 = backtesting_portafolio(rendimientos[["SPY"]], [1.0], inicio, fin)
+
+    # Visualización de resultados
+    fig_bt = go.Figure(go.Scatter(
+        x=bt_sharpe.index,
+            y=bt_sharpe,
+            mode='lines',
+            name="Backtesting Máximo Sharpe Ratio"
+        ))
+
+    fig_bt.add_trace(go.Scatter(
+        x=bt_volatilidad.index,
+            y=bt_volatilidad,
+            mode='lines',
+            name="Backtesting Mínima Volatilidad"
+        ))
+
+    fig_bt.add_trace(go.Scatter(
+        x=bt_rendimiento.index,
+            y=bt_rendimiento,
+            mode='lines',
+            name="Backtesting Mínima Volatilidad (Rendimiento 10%)"
+        ))
+    
+    fig_bt.add_trace(go.Scatter(
+        x=bt_iguales.index,
+            y=bt_iguales,
+            mode='lines',
+            name="Backtesting Pesos Iguales"
+        ))
+    
+    fig_bt.add_trace(go.Scatter(
+        x=bt_sp500.index,
+            y=bt_sp500,
+            mode='lines',
+            name="Backtesting S&P 500"
+        ))
+    
+    fig_bt.update_layout(
+        title="Rendimiento Acumulado",
+        xaxis_title="Fecha",
+        yaxis_title="Rendimiento Acumulado",
+        hovermode="x unified"
+    )
+    st.plotly_chart(fig_bt)
+
+    # Mostrar estadísticas
+    st.markdown("### Métricas Backtesting Máximo Sharpe Ratio")
+    for key, value in stats_sharpe.items():
+        st.metric(key, f"{value:.2f}")
+
+    st.markdown("### Métricas Backtesting Mínima Volatilidad")
+    for key, value in stats_volatilidad.items():
+        st.metric(key, f"{value:.2f}")
+
+    st.markdown("### Métricas Backtesting Mínima Volatilidad (Rendimiento 10%)")
+    for key, value in stats_rendimiento.items():
+        st.metric(key, f"{value:.2f}")
+
+    st.markdown("### Métricas Backtesting Pesos Iguales")
+    for key, value in stats_iguales.items():
+        st.metric(key, f"{value:.2f}")
+
+    st.markdown("### Métricas Backtesting S&P 500")
+    for key, value in stats_sp500.items():
+        st.metric(key, f"{value:.2f}")
+
 with tab4:
     st.header("Modelo de Optimización Black-Litterman")
 
@@ -333,7 +457,4 @@ with tab4:
     except Exception as e:
         st.error(f"Ocurrió un error al calcular el modelo Black-Litterman: {e}")
 
-        st.write(data["estilo"])
-        st.subheader("Costos")
-        st.write(data["costos"])
 
