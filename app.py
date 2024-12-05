@@ -150,6 +150,18 @@ tipo_cambio = obtener_tipo_cambio(start_date, end_date)
 # Calcular rendimientos diarios
 rendimientos = datos.pct_change().dropna()
 
+#VaR y CVaR
+def var_cvar(returns, confianza=0.95):
+    VaR = returns.quantile(1 - confianza)
+    CVaR = returns[returns <= VaR].mean()
+    return VaR, CVaR
+
+def var_cvar_tiempo(returns, tiempo):
+    if len(returns) < ventana:
+        return np.nan, np.nan
+    ventana_returns = returns.iloc[-ventana:]
+    return var_cvar_tiempo(ventana_returns)
+
 # Función para calcular métricas
 def calcular_metricas(rendimientos):
     media = rendimientos.mean() * 252  # Rendimiento anualizado
@@ -157,23 +169,20 @@ def calcular_metricas(rendimientos):
     sharpe = media / volatilidad  # Ratio Sharpe
     sesgo = rendimientos.skew()  # Sesgo de los rendimientos
     curtosis = rendimientos.kurt()  # Curtosis de los rendimientos
-    VaR = rendimientos.quantile(1- confidencie==0.95)
-    CVar = rendimientos[rendimientos <= VaR].mean()
+    VaR, CVaR = var_cvar(rendimientos)
     return {
         "Media": media,
         "Volatilidad": volatilidad,
         "Sharpe": sharpe,
         "Sesgo": sesgo,
         "Curtosis": curtosis,
-        "VaR": VaR
+        "VaR": VaR,
+        "CVaR" : CVar
     }
 
 # Calcular métricas para cada ETF
 metricas = {etf: calcular_metricas(rendimientos[etf]) for etf in etfs}
 metricas_df = pd.DataFrame(metricas).T  # Convertir a DataFrame para análisis tabular
-
-#VaR y CVar
-
 
 # Tab 1: Análisis de Activos Individuales
 with tab1:
@@ -303,6 +312,8 @@ with tab1:
                 st.metric("Sharpe", value=f"{metricas[etf_seleccionado]['Sharpe']:.2f}") 
                 st.metric("Sesgo", value=f"{metricas[etf_seleccionado]['Sesgo']:.2f}") 
                 st.metric("Curtosis", value=f"{metricas[etf_seleccionado]['Curtosis']:.2f}")
+                st.metric("VaR", value=f"{metricas[etf_seleccionado]['VaR']:.2f}")
+                st.metric("CVaR", value=f"{metricas[etf_seleccionado]['CVaR']:.2f}")
                     
                 style_metric_cards(background_color="#84BC9C", border_left_color="#F46197")
 
@@ -342,16 +353,36 @@ with tab1:
             fig.update_yaxes(showgrid=False)  # Oculta líneas de cuadrícula horizontales
     
             st.plotly_chart(fig)
+            st.subheader("Serie de Tiempo de Precios Normalizados")
+            
+            # Gráfica del VaR y CVaR
+            def histog_distr(returns, var_95, cvar_95, title):
+                # Crear el histograma base
+                fig = go.Figure()
+                fig.add_trace(go.Histogram(
+                    x=returns,
+                    nbinsx=50,
+                    name="Distribución de rendimientos",
+                    marker_color="#4CAF50",
+                    opacity=0.75
+                ))
+                # Añadir líneas de VaR y CVaR
+                fig.add_vline(x=var_95, line_width=3, line_dash="dash", line_color="red", annotation_text="VaR (95%)")
+                fig.add_vline(x=cvar_95, line_width=3, line_dash="dash", line_color="blue", annotation_text="CVaR (95%)")
+                # Configurar diseño
+                fig.update_layout(
+                    title=title,
+                    xaxis_title="Rendimientos",
+                    yaxis_title="Frecuencia",
+                    template="plotly_white"
+                )
+                return fig
+                
+            # Crear y mostrar histograma
+            st.subheader("Histograma de rendimientos con VaR y CVaR")
+            histograma = crear_histograma_distribucion(rendimientos[etf_seleccionado], var_95, cvar_95, f"Distribución de rendimientos para {etf_seleccionado}")
+            st.plotly_chart(histograma)
 
-            # Histograma para el activo seleccionado
-            var_asset, cvar_asset = calcular_var_cvar(returns[selected_asset])
-            fig_hist_asset = crear_histograma_distribucion(
-                returns[selected_asset],
-                var_asset,
-                cvar_asset,
-                f'Distribución de Retornos - {selected_asset}'
-            )
-            st.plotly_chart(fig_hist_asset, use_container_width=True, key="hist_asset")
 
 # Tab 2: Portafolios Óptimos
 with tab2:
