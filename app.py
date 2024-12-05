@@ -157,7 +157,7 @@ def calcular_metricas(rendimientos):
     sharpe = media / volatilidad  # Ratio Sharpe
     sesgo = rendimientos.skew()  # Sesgo de los rendimientos
     curtosis = rendimientos.kurt()  # Curtosis de los rendimientos
-    VaR = rendimientos.quantile(1- confidencie=0.95)
+    VaR = rendimientos.quantile(1- confidencie==0.95)
     CVar = rendimientos[rendimientos <= VaR].mean()
     return {
         "Media": media,
