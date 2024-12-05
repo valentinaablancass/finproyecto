@@ -172,49 +172,49 @@ metricas_df = pd.DataFrame(metricas).T  # Convertir a DataFrame para análisis t
 
 # Tab 1: Análisis de Activos Individuales
 with tab1:
-       st.markdown(
-        """
-        <div style="
-            background-color: #C4F5FC;
-            padding: 8px;
-            border-radius: 20px;
-            color: black;
-            text-align: center;
-        ">
-            <h1 style="margin: 0; color: #black; font-size: 25px; ">Análisis de Activos Individuales</h1>
-        </div>
-        """,
-        unsafe_allow_html=True,
-        )
+    st.markdown(
+    """
+    <div style="
+        background-color: #C4F5FC;
+        padding: 8px;
+        border-radius: 20px;
+        color: black;
+        text-align: center;
+    ">
+        <h1 style="margin: 0; color: #black; font-size: 25px; ">Análisis de Activos Individuales</h1>
+    </div>
+    """,
+    unsafe_allow_html=True,
+    )
         
-        # Selección del ETF para análisis
-        etfs = ['LQD', 'EMB', 'SPY', 'EMXC', 'IAU']
-        etf_seleccionado = st.selectbox("Selecciona un ETF para análisis:", options=etfs)
-        st.markdown(
-            """
-            <style>
-            .card {
-                background-color: #1F2C56;
-                border-radius: 10px;
-                padding: 20px;
-                margin: 10px;#497076
-                color: white;
-                text-align: center;
-                box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3);
-            }
-            .card-title {
-                font-size: 20px;
-                font-weight: bold;
-                margin-bottom: 10px;
-            }
-            .card-value {
-                font-size: 28px;
-                font-weight: bold;
-            }
-            </style>
-            """,
-            unsafe_allow_html=True
-        )
+    # Selección del ETF para análisis
+   # etfs = ['LQD', 'EMB', 'SPY', 'EMXC', 'IAU']
+    etf_seleccionado = st.selectbox("Selecciona un ETF para análisis:", options=etfs)
+    st.markdown(
+        """
+        <style>
+        .card {
+            background-color: #1F2C56;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 10px;#497076
+            color: white;
+            text-align: center;
+            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3);
+        }
+        .card-title {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .card-value {
+            font-size: 28px;
+            font-weight: bold;
+        }
+        </style>
+        """,
+        unsafe_allow_html=True
+    )
 
      if etf_seleccionado:
         if etf_seleccionado not in datos.columns or datos[etf_seleccionado].dropna().empty:
