@@ -157,17 +157,22 @@ def calcular_metricas(rendimientos):
     sharpe = media / volatilidad  # Ratio Sharpe
     sesgo = rendimientos.skew()  # Sesgo de los rendimientos
     curtosis = rendimientos.kurt()  # Curtosis de los rendimientos
+    VaR = rendimientos.quantile(1- confidencie=0.95)
+    CVar = rendimientos[rendimientos <= VaR].mean()
     return {
         "Media": media,
         "Volatilidad": volatilidad,
         "Sharpe": sharpe,
         "Sesgo": sesgo,
-        "Curtosis": curtosis
+        "Curtosis": curtosis,
+        "VaR": VaR
     }
 
 # Calcular métricas para cada ETF
 metricas = {etf: calcular_metricas(rendimientos[etf]) for etf in etfs}
 metricas_df = pd.DataFrame(metricas).T  # Convertir a DataFrame para análisis tabular
+
+#VaR y CVar
 
 
 # Tab 1: Análisis de Activos Individuales
@@ -337,6 +342,16 @@ with tab1:
             fig.update_yaxes(showgrid=False)  # Oculta líneas de cuadrícula horizontales
     
             st.plotly_chart(fig)
+
+            # Histograma para el activo seleccionado
+            var_asset, cvar_asset = calcular_var_cvar(returns[selected_asset])
+            fig_hist_asset = crear_histograma_distribucion(
+                returns[selected_asset],
+                var_asset,
+                cvar_asset,
+                f'Distribución de Retornos - {selected_asset}'
+            )
+            st.plotly_chart(fig_hist_asset, use_container_width=True, key="hist_asset")
 
 # Tab 2: Portafolios Óptimos
 with tab2:
