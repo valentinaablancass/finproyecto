@@ -151,23 +151,23 @@ tipo_cambio = obtener_tipo_cambio(start_date, end_date)
 rendimientos = datos.pct_change().dropna()
 
 # Función para calcular métricas
-    def calcular_metricas(rendimientos):
-        media = rendimientos.mean() * 252  # Rendimiento anualizado
-        volatilidad = rendimientos.std() * np.sqrt(252)  # Volatilidad anualizada
-        sharpe = media / volatilidad  # Ratio Sharpe
-        sesgo = rendimientos.skew()  # Sesgo de los rendimientos
-        curtosis = rendimientos.kurt()  # Curtosis de los rendimientos
-        return {
-            "Media": media,
-            "Volatilidad": volatilidad,
-            "Sharpe": sharpe,
-            "Sesgo": sesgo,
-            "Curtosis": curtosis
-        }
+def calcular_metricas(rendimientos):
+    media = rendimientos.mean() * 252  # Rendimiento anualizado
+    volatilidad = rendimientos.std() * np.sqrt(252)  # Volatilidad anualizada
+    sharpe = media / volatilidad  # Ratio Sharpe
+    sesgo = rendimientos.skew()  # Sesgo de los rendimientos
+    curtosis = rendimientos.kurt()  # Curtosis de los rendimientos
+    return {
+        "Media": media,
+        "Volatilidad": volatilidad,
+        "Sharpe": sharpe,
+        "Sesgo": sesgo,
+        "Curtosis": curtosis
+    }
 
-    # Calcular métricas para cada ETF
-    metricas = {etf: calcular_metricas(rendimientos[etf]) for etf in etfs}
-    metricas_df = pd.DataFrame(metricas).T  # Convertir a DataFrame para análisis tabular
+# Calcular métricas para cada ETF
+metricas = {etf: calcular_metricas(rendimientos[etf]) for etf in etfs}
+metricas_df = pd.DataFrame(metricas).T  # Convertir a DataFrame para análisis tabular
 
 
 # Tab 1: Análisis de Activos Individuales
