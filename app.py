@@ -4,9 +4,28 @@ import pandas as pd
 import numpy as np
 import scipy.optimize as sco
 import plotly.graph_objects as go
+from streamlit_option_menu import option_menu
+from streamlit_extras.metric_cards import style_metric_cards
 
 # Configuración de la página
 st.set_page_config(page_title="Análisis de Portafolios", layout="wide")
+st.markdown(
+    """
+    <style>
+    body {
+        background-color: #1D1E2C;
+        color: white;
+    }
+    h1, h2, h3, h4, h5, h6, p, span, div {
+        color: white !important;
+    }
+    .stApp {
+        background-color: #1D1E2C;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
 st.title("Análisis y Optimización de Portafolios")
 
 # Definición de ETFs y ventanas de tiempo
@@ -69,10 +88,48 @@ ventanas = {
     "2021-2023": ("2021-01-01", "2023-12-31")
 }
 
-# Selección de ventana de tiempo en el sidebar
-st.sidebar.header("Configuración de Ventana")
-ventana = st.sidebar.selectbox("Selecciona una ventana de tiempo para análisis:", options=list(ventanas.keys()))
-start_date, end_date = ventanas[ventana]
+# Funcion para crear un menu 
+with st.sidebar:
+    selected = option_menu(
+        menu_title="Ventana",
+        options=list(ventanas.keys()),
+        icons=["calendar", "calendar-range", "calendar3"],
+        menu_icon="gear",
+        default_index=0,
+        styles={
+            "container": {"padding": "5px", "background-color": "#1D1E2C"},
+            "icon": {"color": "white", "font-size": "25px"},  
+            "nav-link": {
+                "font-size": "16px",
+                "text-align": "left",
+                "margin": "0px",
+                "color": "white",
+                "background-color": "#1D1E2C",
+            },
+            "nav-link-selected": {"background-color": "#C4F5FC", "color": "white"},
+        },
+    )
+    
+start_date, end_date = ventanas[selected]
+
+# Tabs de la aplicación
+st.markdown(
+    """
+    <style>
+    div[data-baseweb="tab-highlight"] {
+        background-color: white !important;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+tab1, tab2, tab3, tab4 = st.tabs([
+    "Análisis de Activos Individuales",
+    "Portafolios Óptimos",
+    "Comparación de Portafolios",
+    "Black-Litterman"
+])
+
 
 # Descargar datos de los ETFs
 @st.cache_data
@@ -93,57 +150,157 @@ tipo_cambio = obtener_tipo_cambio(start_date, end_date)
 # Calcular rendimientos diarios
 rendimientos = datos.pct_change().dropna()
 
-# Tabs de la Aplicación
-tab1, tab2, tab3, tab4 = st.tabs([
-    "Análisis de Activos Individuales",
-    "Portafolios Óptimos",
-    "Comparación de Portafolios",
-    "Black - Litterman"
-])
+# Función para calcular métricas
+    def calcular_metricas(rendimientos):
+        media = rendimientos.mean() * 252  # Rendimiento anualizado
+        volatilidad = rendimientos.std() * np.sqrt(252)  # Volatilidad anualizada
+        sharpe = media / volatilidad  # Ratio Sharpe
+        sesgo = rendimientos.skew()  # Sesgo de los rendimientos
+        curtosis = rendimientos.kurt()  # Curtosis de los rendimientos
+        return {
+            "Media": media,
+            "Volatilidad": volatilidad,
+            "Sharpe": sharpe,
+            "Sesgo": sesgo,
+            "Curtosis": curtosis
+        }
+
+    # Calcular métricas para cada ETF
+    metricas = {etf: calcular_metricas(rendimientos[etf]) for etf in etfs}
+    metricas_df = pd.DataFrame(metricas).T  # Convertir a DataFrame para análisis tabular
+
 
 # Tab 1: Análisis de Activos Individuales
 with tab1:
-    st.header("Análisis de Activos Individuales")
-    etf_seleccionado = st.selectbox("Selecciona un ETF para análisis:", options=etfs)
+       st.markdown(
+        """
+        <div style="
+            background-color: #C4F5FC;
+            padding: 8px;
+            border-radius: 20px;
+            color: black;
+            text-align: center;
+        ">
+            <h1 style="margin: 0; color: #black; font-size: 25px; ">Análisis de Activos Individuales</h1>
+        </div>
+        """,
+        unsafe_allow_html=True,
+        )
+        
+        etf_seleccionado = st.selectbox("Selecciona un ETF para análisis:", options=etfs)
+        st.markdown(
+            """
+            <style>
+            .card {
+                background-color: #1F2C56;
+                border-radius: 10px;
+                padding: 20px;
+                margin: 10px;#497076
+                color: white;
+                text-align: center;
+                box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3);
+            }
+            .card-title {
+                font-size: 20px;
+                font-weight: bold;
+                margin-bottom: 10px;
+            }
+            .card-value {
+                font-size: 28px;
+                font-weight: bold;
+            }
+            </style>
+            """,
+            unsafe_allow_html=True
+        )
 
-    if etf_seleccionado:
+     if etf_seleccionado:
         if etf_seleccionado not in datos.columns or datos[etf_seleccionado].dropna().empty:
             st.error(f"No hay datos disponibles para {etf_seleccionado} en la ventana seleccionada.")
         else:
+             # Dividir en dos columnas
             col1, col2 = st.columns(2)
 
             with col1:
                 st.subheader("Características del ETF")
                 data = descripciones_etfs[etf_seleccionado]
-                st.write("**Nombre:**", data["nombre"])
-                st.write("**Exposición:**", data["exposicion"])
-                st.write("**Índice:**", data["indice"])
-                st.write("**Moneda:**", data["moneda"])
-                st.write("**Principales Contribuyentes:**", ", ".join(data["principales"]))
-                st.write("**Países:**", data["paises"])
-                st.write("**Estilo:**", data["estilo"])
-                st.write("**Costos:**", data["costos"])
-
+                
+               # Crear la tabla con las características
+                tabla_caracteristicas = pd.DataFrame({
+                    "Características": ["Nombre", "Exposición", "Índice", "Moneda", "Principales Contribuyentes", "Países", "Estilo", "Costos"],
+                    "Detalles": [
+                        data["nombre"],
+                        data["exposicion"],
+                        data["indice"],
+                        data["moneda"],
+                        ", ".join(data["principales"]),
+                        data["paises"],
+                        data["estilo"],
+                        data["costos"]
+                    ]
+                })  
+    
+                # Estilizar la tabla con HTML para letras blancas y eliminar índices
+                st.markdown(
+                    """
+                    <style>
+                    table {
+                        color: white;
+                        background-color: transparent;
+                        border-collapse: collapse;
+                        width: 100%;
+                    th {
+                        background-color: #2CA58D; /* Fondo amarillo para la fila del encabezado */
+                        color: black; /* Texto en negro para contraste */
+                        font-weight: bold;
+                        text-align: center;
+                        vertical-align: middle;
+                    }
+                    td {
+                        border: 1px solid white;
+                        padding: 8px;
+                        text-align: center;
+                    }
+                    </style>
+                    """,
+                    unsafe_allow_html=True
+                )
+    
+                # Convertir el DataFrame a HTML 
+                tabla_html = tabla_caracteristicas.to_html(index=False, escape=False)
+    
+                # Renderizar la tabla estilizada
+                st.markdown(tabla_html, unsafe_allow_html=True)
+            # CSS para aumentar el tamaño de la fuente en las métricas
+            st.markdown(
+                """
+                <style>
+                .stMetric {
+                    font-size: 24px !important; 
+                }
+                .stMetric label {
+                    font-size: 28px !important; 
+                }
+                </style>
+                """,
+                unsafe_allow_html=True
+            )
+    
+            # Métricas calculadas
             with col2:
                 st.subheader("Métricas Calculadas")
+                
                 def calcular_metricas(rendimientos):
-                    media = rendimientos.mean() * 252
-                    volatilidad = rendimientos.std() * np.sqrt(252)
-                    sharpe = media / volatilidad
-                    sesgo = rendimientos.skew()
-                    curtosis = rendimientos.kurt()
-                    return {
-                        "Media": media,
-                        "Volatilidad": volatilidad,
-                        "Sharpe": sharpe,
-                        "Sesgo": sesgo,
-                        "Curtosis": curtosis
-                    }
+                # Mostrar las métricas en recuadros
+                st.metric("Media", value=f"{metricas[etf_seleccionado]['Media']:.2f}")
+                st.metric("Volatilidad", value=f"{metricas[etf_seleccionado]['Volatilidad']:.2f}")
+                st.metric("Sharpe", value=f"{metricas[etf_seleccionado]['Sharpe']:.2f}") 
+                st.metric("Sesgo", value=f"{metricas[etf_seleccionado]['Sesgo']:.2f}") 
+                st.metric("Curtosis", value=f"{metricas[etf_seleccionado]['Curtosis']:.2f}")
+                    
+                style_metric_cards(background_color="#84BC9C", border_left_color="#F46197")
 
-                metricas = calcular_metricas(rendimientos[etf_seleccionado])
-                for key, value in metricas.items():
-                    st.metric(key, f"{value:.2f}" if key != "Sharpe" else f"{value:.2f}")
-
+            # Gráfica de precios normalizados
             st.subheader("Serie de Tiempo de Precios Normalizados")
             precios_normalizados = datos[etf_seleccionado] / datos[etf_seleccionado].iloc[0] * 100
             fig = go.Figure(go.Scatter(
@@ -151,19 +308,54 @@ with tab1:
                 y=precios_normalizados,
                 mode='lines',
                 name=etf_seleccionado
+                line=dict(color='#F46197') 
             ))
             fig.update_layout(
-                title="Precio Normalizado",
-                xaxis_title="Fecha",
-                yaxis_title="Precio Normalizado",
-                hovermode="x unified"
+            fig.update_layout(
+                title=dict(
+                    text="Precio Normalizado",
+                    font=dict(color='white'),
+                ),
+                xaxis=dict(
+                    title="Fecha",
+                    titlefont=dict(color='white'),  # Etiqueta del eje x en blanco
+                    tickfont=dict(color='white')  # Etiquetas de los ticks en blanco
+                ),
+                yaxis=dict(
+                    title="Precio Normalizado",
+                    titlefont=dict(color='white'),  # Etiqueta del eje y en blanco
+                    tickfont=dict(color='white')  # Etiquetas de los ticks en blanco
+                ),
+                hovermode="x unified",
+                plot_bgcolor='#1D1E2C',  # Fondo del área de la gráfica
+                paper_bgcolor='#1D1E2C',  # Fondo del área completa de la gráfica
+                font=dict(color='white')  # Color del texto general
             )
+    
+            fig.update_xaxes(showgrid=False)  # Oculta líneas de cuadrícula verticales
+            fig.update_yaxes(showgrid=False)  # Oculta líneas de cuadrícula horizontales
+    
             st.plotly_chart(fig)
 
 # Tab 2: Portafolios Óptimos
 with tab2:
     st.header("Portafolios Óptimos")
+    st.markdown(
+    """
+    <div style="
+        background-color: #C4F5FC;
+        padding: 8px;
+        border-radius: 20px;
+        color: black;
+        text-align: center;
+    ">
+        <h1 style="margin: 0; color: #black; font-size: 25px; ">Portafolios Óptimos</h1>
+    </div>
+    """,
+    unsafe_allow_html=True,
+    )
 
+    # Optimización de portafolios
     def optimizar_portafolio(rendimientos, objetivo="sharpe", rendimiento_objetivo=None, incluir_tipo_cambio=False):
         media = rendimientos.mean() * 252
         covarianza = rendimientos.cov() * 252
@@ -191,7 +383,8 @@ with tab2:
 
         resultado = sco.minimize(objetivo_func, pesos_iniciales, method='SLSQP', bounds=limites, constraints=restricciones)
         return resultado.x
-
+         
+    # Optimización de los tres portafolios
     pesos_sharpe = optimizar_portafolio(rendimientos, objetivo="sharpe")
     pesos_volatilidad = optimizar_portafolio(rendimientos, objetivo="volatilidad")
     pesos_rendimiento = optimizar_portafolio(rendimientos, objetivo="rendimiento", rendimiento_objetivo=0.10, incluir_tipo_cambio=True)
@@ -208,14 +401,80 @@ with tab2:
     )
 
     st.subheader(f"Pesos del Portafolio: {portafolio_seleccionado}")
-    st.bar_chart(pesos_df[portafolio_seleccionado])
 
-    st.subheader("Distribución del Portafolio")
-    fig = go.Figure(data=[
-        go.Pie(labels=etfs, values=pesos_df[portafolio_seleccionado], hoverinfo='label+percent')
+    fig_barras = go.Figure(data=[
+        go.Bar(
+            x=pesos_df.index,
+            y=pesos_df[portafolio_seleccionado],
+            marker_color='#2CA58D'  # Cambia el color de las barras si lo deseas
+        )
     ])
-    fig.update_layout(title=f"Composición del Portafolio: {portafolio_seleccionado}")
-    st.plotly_chart(fig)
+
+    # Configuración de diseño para eliminar fondo y texto blanco
+    fig_barras.update_layout(
+        title=dict(
+            text=f"Pesos del Portafolio: {portafolio_seleccionado}",
+            font=dict(color='white')
+        ),
+        xaxis=dict(
+            title="ETFs",
+            titlefont=dict(color='white'),
+            tickfont=dict(color='white')  # Texto blanco para etiquetas del eje X
+        ),
+        yaxis=dict(
+            title="Pesos",
+            titlefont=dict(color='white'),
+            tickfont=dict(color='white')  # Texto blanco para etiquetas del eje Y
+        ),
+        plot_bgcolor='rgba(0,0,0,0)',  # Fondo transparente
+        paper_bgcolor='rgba(0,0,0,0)',  # Fondo transparente
+        font=dict(color='white')  # Texto general en blanco
+    )
+        
+    # Mostrar el gráfico
+    st.plotly_chart(fig_barras)
+        
+    # Gráfico de pastel para la composición del portafolio
+    st.subheader("Composición del Portafolio")
+
+     # Ajustar valores y etiquetas
+    valores_redondeados = [round(peso, 6) if peso > 1e-6 else 0 for peso in pesos_df[portafolio_seleccionado]]
+    etiquetas = [
+        f"{etf} ({peso:.6f})" if peso > 0 else f"{etf} (<1e-6)"
+        for etf, peso in zip(etfs, pesos_df[portafolio_seleccionado])
+    ]
+
+    # Crear gráfica de pastel
+    fig_pastel = go.Figure(data=[
+        go.Pie(
+            labels=etiquetas,
+            values=valores_redondeados,
+            hoverinfo='label+percent+value',
+            textinfo='percent',  # Muestra porcentajes en la gráfica
+            marker=dict(colors=['#2CA58D', '#F46197', '#84BC9C', '#FFD700', '#497076'])  # Colores personalizados
+        )
+    ])
+
+    # Configuración del diseño para eliminar fondo y texto blanco
+    fig_pastel.update_layout(
+        title=dict(
+            text=f"Distribución del Portafolio ({portafolio_seleccionado})",
+            font=dict(color='white')  # Título en blanco
+        ),
+        legend=dict(
+            font=dict(color='white'),  # Texto blanco para la leyenda
+            bgcolor='rgba(0,0,0,0)'  # Fondo transparente para la leyenda
+        ),
+        plot_bgcolor='rgba(0,0,0,0)',  # Fondo transparente
+        paper_bgcolor='rgba(0,0,0,0)',  # Fondo transparente
+        font=dict(color='white')  # Texto general en blanco
+    )
+
+    #Mostrar el gráfico
+    st.plotly_chart(fig_pastel)
+
+    # Tab 3: Comparación de Portafolios
+
 
     if portafolio_seleccionado == "Mínima Volatilidad (Rendimiento 10% en MXN)":
         st.subheader("Ajustes por Tipo de Cambio")
@@ -372,7 +631,8 @@ with tab3:
     st.markdown("### Métricas Backtesting S&P 500")
     for key, value in stats_sp500.items():
         st.metric(key, f"{value:.2f}")
-
+        
+# Tab 4: Black-Litterman
 with tab4:
     st.header("Modelo de Optimización Black-Litterman")
 
@@ -390,6 +650,10 @@ with tab4:
             [0, 0, 0, 0, 1]
         ])
         Q = np.array([0.08, 0.065, 0.12, 0.06, 0.05])  # Rendimientos esperados para cada activo
+
+        # Datos necesarios para el modelo
+        media_rendimientos = rendimientos.mean() * 252
+        covarianza_rendimientos = rendimientos.cov() * 252
 
         def black_litterman_optimizar(media_rendimientos, covarianza_rendimientos, P, Q, tau=0.05):
             """
