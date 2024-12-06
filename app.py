@@ -534,11 +534,11 @@ with tab3:
 
     
     colores_etfs = {
-    'LQD': '#2CA58D',
-    'EMB': '#73d2de',
-    'SPY': '#F46197',
-    'EMXC': '#ffbc42',
-    'IAU': '#8f2d56'
+    'LQD': '#73d2de',
+    'EMB': '#d81159',
+    'SPY': '#fbb13c',
+    'EMXC': '#8f2d56',
+    'IAU': '#218380'
     }
 
     
