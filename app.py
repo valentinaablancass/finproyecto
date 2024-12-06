@@ -624,6 +624,7 @@ with tab3:
             "Máximo Drawdown": drawdown
         }
 
+
         return rendimiento_acumulado, estadisticas
 
     # Parámetros del backtesting
@@ -659,7 +660,7 @@ with tab3:
         y=bt_rendimiento,
         mode='lines',
         name="Mínima Volatilidad (Rendimiento 10%)",
-        line=dict(color='#fde12d')
+        line=dict(color='#5bc8af')
     ))
     fig_bt.add_trace(go.Scatter(
         x=bt_iguales.index,
@@ -692,11 +693,56 @@ with tab3:
 
     # Mostrar estadísticas
     st.markdown("### Métricas de Backtesting")
+
+    # Aplicar estilos personalizados para las métricas
+    style_metric_cards(background_color="#1F2C56", border_left_color="#F46197")
+    st.markdown(
+        """
+        <style>
+        .metric-box {
+            background-color: #1F2C56;
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            margin-bottom: 10px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.25);
+        }
+        </style>
+        """,
+        unsafe_allow_html=True
+    )
+
+    # Iterar sobre las estadísticas de los portafolios
     for nombre, stats in [("Máximo Sharpe", stats_sharpe), ("Mínima Volatilidad", stats_volatilidad), 
-                          ("Mínima Volatilidad (Rendimiento 10%)", stats_rendimiento), ("Pesos Iguales", stats_iguales)]:
+                      ("Mínima Volatilidad (Rendimiento 10%)", stats_rendimiento), ("Pesos Iguales", stats_iguales)]:
         st.markdown(f"**{nombre}:**")
-        for key, value in stats.items():
-            st.metric(label=key, value=f"{value:.2f}")
+    
+        col1, col2, col3 = st.columns(3)
+        with col1:
+            st.metric(label="Rendimiento Anualizado", value=f"{stats['Rendimiento Anualizado']:.2f}")
+        with col2:
+            st.metric(label="Volatilidad Anualizada", value=f"{stats['Volatilidad Anualizada']:.2f}")
+        with col3:
+            st.metric(label="Ratio de Sharpe", value=f"{stats['Ratio de Sharpe']:.2f}")
+    
+        col4, col5, col6 = st.columns(3)
+        with col4:
+            st.metric(label="Sesgo", value=f"{stats['Sesgo']:.2f}")
+        with col5:
+            st.metric(label="Curtosis", value=f"{stats['Curtosis']:.2f}")
+        with col6:
+            st.metric(label=f"VaR (5%)", value=f"{stats['VaR (5%)']:.2f}")
+
+        col7, col8 = st.columns(2)
+        with col7:
+            st.metric(label="CVaR (5%)", value=f"{stats['CVaR (5%)']:.2f}")
+        with col8:
+            st.metric(label="Sortino Ratio", value=f"{stats['Sortino Ratio']:.2f}")
+
+        col9 = st.columns(1)[0]
+        with col9:
+            st.metric(label="Máximo Drawdown", value=f"{stats['Máximo Drawdown']:.2%}")
 
 # Tab 4: Black-Litterman
 with tab4:
