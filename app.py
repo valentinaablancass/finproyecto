@@ -734,13 +734,11 @@ with tab3:
         with col6:
             st.metric(label=f"VaR (5%)", value=f"{stats['VaR (5%)']:.2f}")
 
-        col7, col8 = st.columns(2)
+        col7, col8, col9 = st.columns(3)
         with col7:
             st.metric(label="CVaR (5%)", value=f"{stats['CVaR (5%)']:.2f}")
         with col8:
             st.metric(label="Sortino Ratio", value=f"{stats['Sortino Ratio']:.2f}")
-
-        col9 = st.columns(1)[0]
         with col9:
             st.metric(label="Máximo Drawdown", value=f"{stats['Máximo Drawdown']:.2%}")
 
