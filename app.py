@@ -645,28 +645,28 @@ with tab3:
         y=bt_sharpe,
         mode='lines',
         name="Máximo Sharpe",
-        line=dict(color='#FF5733')
+        line=dict(color='#9df7e5')
     ))
     fig_bt.add_trace(go.Scatter(
         x=bt_volatilidad.index,
         y=bt_volatilidad,
         mode='lines',
         name="Mínima Volatilidad",
-        line=dict(color='#33FF57')
+        line=dict(color='#d90368')
     ))
     fig_bt.add_trace(go.Scatter(
         x=bt_rendimiento.index,
         y=bt_rendimiento,
         mode='lines',
         name="Mínima Volatilidad (Rendimiento 10%)",
-        line=dict(color='#5733FF')
+        line=dict(color='#fde12d')
     ))
     fig_bt.add_trace(go.Scatter(
         x=bt_iguales.index,
         y=bt_iguales,
         mode='lines',
         name="Pesos Iguales",
-        line=dict(color='#FFD700')
+        line=dict(color='#af4d98')
     ))
     fig_bt.update_layout(
         title=dict(text="Rendimiento Acumulado", font=dict(color='white')),
