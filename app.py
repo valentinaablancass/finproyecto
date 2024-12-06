@@ -235,7 +235,6 @@ def histog_distr(returns, var_95, cvar_95, title):
     return fig
 
 # Tab 1: Análisis de Activos Individuales
-# Tab 1: Análisis de Activos Individuales
 with tab1:
     st.markdown(
         """
