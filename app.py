@@ -700,8 +700,8 @@ with tab3:
         <div style="background-color: {background_color}; color: {text_color}; padding: 10px; 
                     border-radius: 10px; text-align: center; margin-bottom: 10px; 
                     border-left: 6px solid {border_left_color};">
-            <h4 style="margin: 0;">{label}</h4>
-            <p style="margin: 0; font-size: 18px; font-weight: bold;">{value}</p>
+            <h5 style="margin: 0; font-size: 14px;">{label}</h5>
+            <p style="margin: 0; font-size: 20px; font-weight: bold;">{value}</p>
         </div>
         """
 
