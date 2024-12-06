@@ -522,7 +522,8 @@ with tab2:
             st.write(f"**Tipo de cambio medio esperado:** {tipo_cambio_medio:.2f} USD/MXN")
         except Exception as e:
             st.error(f"Error al calcular el promedio del tipo de cambio: {e}")
-# Tab 3: Comparación de Portafolios
+
+
 # Tab 3: Comparación de Portafolios
 with tab3:
     st.header("Comparación de Portafolios")
@@ -614,9 +615,9 @@ with tab3:
     fig_bt.add_trace(go.Scatter(x=bt_iguales.index, y=bt_iguales, mode='lines', name="Pesos Iguales"))
 
     fig_bt.update_layout(
-        title="Rendimiento Acumulado",
-        xaxis_title="Fecha",
-        yaxis_title="Rendimiento Acumulado",
+        title=dict(text="Rendimiento Acumulado", font=dict(color='white')),
+        xaxis=dict(title="Fecha", titlefont=dict(color='white'), tickfont=dict(color='white')),
+        yaxis=dict(title="Rendimiento Acumulado", titlefont=dict(color='white'), tickfont=dict(color='white')),
         hovermode="x unified",
         plot_bgcolor='#1D1E2C',
         paper_bgcolor='#1D1E2C',
