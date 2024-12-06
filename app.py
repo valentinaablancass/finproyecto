@@ -727,7 +727,7 @@ with tab3:
             cols = st.columns(3)
             for col, (label, value) in zip(cols, list(stats.items())[i:i+3]):
                 with col:
-                    st.markdown(render_metric(label, f"{value:.2f}", background_color="#da4167", border_left_color="#026c7c"), unsafe_allow_html=True)
+                    st.markdown(render_metric(label, f"{value:.2f}", background_color="#da4167", border_left_color="#a2d2ff"), unsafe_allow_html=True)
 
     # Columna 2: Mínima Volatilidad (Rendimiento 10%) y Pesos Iguales (en 3 boxes por fila cada uno)
     with col2:
@@ -738,7 +738,7 @@ with tab3:
             cols = st.columns(3)
             for col, (label, value) in zip(cols, list(stats.items())[i:i+3]):
                 with col:
-                    st.markdown(render_metric(label, f"{value:.2f}", background_color="#8f2d56", border_left_color="#0496ff", text_color="black"), unsafe_allow_html=True)
+                    st.markdown(render_metric(label, f"{value:.2f}", background_color="#8f2d56", border_left_color="#026c7c", text_color="black"), unsafe_allow_html=True)
 
         # Pesos Iguales
         st.markdown("#### Pesos Iguales")
