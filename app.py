@@ -694,120 +694,42 @@ with tab3:
     # Mostrar estadísticas
     st.markdown("### Métricas de Backtesting")
 
+    # HTML para las métricas personalizadas
+    def render_metric(label, value, background_color, text_color="white"):
+        return f"""
+        <div style="background-color: {background_color}; color: {text_color}; padding: 10px; 
+                    border-radius: 10px; text-align: center; margin-bottom: 10px;">
+            <h4 style="margin: 0;">{label}</h4>
+            <p style="margin: 0; font-size: 24px; font-weight: bold;">{value}</p>
+        </div>
+        """
+
     # Columnas principales
     col1, col2 = st.columns(2)
 
     # Columna 1: Máximo Sharpe y Mínima Volatilidad
     with col1:
+        # Máximo Sharpe
         st.markdown("#### Máximo Sharpe")
-        style_metric_cards(background_color="#006ba6", border_left_color="#d81159")  # Fondo rojo
-        stats = stats_sharpe
-        cols = st.columns(3)
-        with cols[0]:
-            st.metric(label="Rendimiento Anualizado", value=f"{stats['Rendimiento Anualizado']:.2f}")
-        with cols[1]:
-            st.metric(label="Volatilidad Anualizada", value=f"{stats['Volatilidad Anualizada']:.2f}")
-        with cols[2]:
-            st.metric(label="Ratio de Sharpe", value=f"{stats['Ratio de Sharpe']:.2f}")
+        for label, value in stats_sharpe.items():
+            st.markdown(render_metric(label, f"{value:.2f}", background_color="#FF6666"), unsafe_allow_html=True)
 
-        cols = st.columns(3)
-        with cols[0]:
-            st.metric(label="Sesgo", value=f"{stats['Sesgo']:.2f}")
-        with cols[1]:
-            st.metric(label="Curtosis", value=f"{stats['Curtosis']:.2f}")
-        with cols[2]:
-            st.metric(label=f"VaR (5%)", value=f"{stats['VaR (5%)']:.2f}")
-
-        cols = st.columns(3)
-        with cols[0]:
-            st.metric(label="CVaR (5%)", value=f"{stats['CVaR (5%)']:.2f}")
-        with cols[1]:
-            st.metric(label="Sortino Ratio", value=f"{stats['Sortino Ratio']:.2f}")
-        with cols[2]:
-            st.metric(label="Máximo Drawdown", value=f"{stats['Máximo Drawdown']:.2%}")
-
+        # Mínima Volatilidad
         st.markdown("#### Mínima Volatilidad")
-        style_metric_cards(background_color="#8f2d56", border_left_color="#0496ff")  # Fondo azul
-        stats = stats_volatilidad
-        cols = st.columns(3)
-        with cols[0]:
-            st.metric(label="Rendimiento Anualizado", value=f"{stats['Rendimiento Anualizado']:.2f}")
-        with cols[1]:
-            st.metric(label="Volatilidad Anualizada", value=f"{stats['Volatilidad Anualizada']:.2f}")
-        with cols[2]:
-            st.metric(label="Ratio de Sharpe", value=f"{stats['Ratio de Sharpe']:.2f}")
-
-        cols = st.columns(3)
-        with cols[0]:
-            st.metric(label="Sesgo", value=f"{stats['Sesgo']:.2f}")
-        with cols[1]:
-            st.metric(label="Curtosis", value=f"{stats['Curtosis']:.2f}")
-        with cols[2]:
-            st.metric(label=f"VaR (5%)", value=f"{stats['VaR (5%)']:.2f}")
-
-        cols = st.columns(3)
-        with cols[0]:
-            st.metric(label="CVaR (5%)", value=f"{stats['CVaR (5%)']:.2f}")
-        with cols[1]:
-            st.metric(label="Sortino Ratio", value=f"{stats['Sortino Ratio']:.2f}")
-        with cols[2]:
-            st.metric(label="Máximo Drawdown", value=f"{stats['Máximo Drawdown']:.2%}")
+        for label, value in stats_volatilidad.items():
+            st.markdown(render_metric(label, f"{value:.2f}", background_color="#6666FF"), unsafe_allow_html=True)
 
     # Columna 2: Mínima Volatilidad (Rendimiento 10%) y Pesos Iguales
     with col2:
+        # Mínima Volatilidad (Rendimiento 10%)
         st.markdown("#### Mínima Volatilidad (Rendimiento 10%)")
-        style_metric_cards(background_color="#FFFF66", border_left_color="#FFD700")  # Fondo amarillo
-        stats = stats_rendimiento
-        cols = st.columns(3)
-        with cols[0]:
-            st.metric(label="Rendimiento Anualizado", value=f"{stats['Rendimiento Anualizado']:.2f}")
-        with cols[1]:
-            st.metric(label="Volatilidad Anualizada", value=f"{stats['Volatilidad Anualizada']:.2f}")
-        with cols[2]:
-            st.metric(label="Ratio de Sharpe", value=f"{stats['Ratio de Sharpe']:.2f}")
+        for label, value in stats_rendimiento.items():
+            st.markdown(render_metric(label, f"{value:.2f}", background_color="#FFFF66", text_color="black"), unsafe_allow_html=True)
 
-        cols = st.columns(3)
-        with cols[0]:
-            st.metric(label="Sesgo", value=f"{stats['Sesgo']:.2f}")
-        with cols[1]:
-            st.metric(label="Curtosis", value=f"{stats['Curtosis']:.2f}")
-        with cols[2]:
-            st.metric(label=f"VaR (5%)", value=f"{stats['VaR (5%)']:.2f}")
-
-        cols = st.columns(3)
-        with cols[0]:
-            st.metric(label="CVaR (5%)", value=f"{stats['CVaR (5%)']:.2f}")
-        with cols[1]:
-            st.metric(label="Sortino Ratio", value=f"{stats['Sortino Ratio']:.2f}")
-        with cols[2]:
-            st.metric(label="Máximo Drawdown", value=f"{stats['Máximo Drawdown']:.2%}")
-
+        # Pesos Iguales
         st.markdown("#### Pesos Iguales")
-        style_metric_cards(background_color="#66FF66", border_left_color="#00FF00")  # Fondo verde
-        stats = stats_iguales
-        cols = st.columns(3)
-        with cols[0]:
-            st.metric(label="Rendimiento Anualizado", value=f"{stats['Rendimiento Anualizado']:.2f}")
-        with cols[1]:
-            st.metric(label="Volatilidad Anualizada", value=f"{stats['Volatilidad Anualizada']:.2f}")
-        with cols[2]:
-            st.metric(label="Ratio de Sharpe", value=f"{stats['Ratio de Sharpe']:.2f}")
-
-        cols = st.columns(3)
-        with cols[0]:
-            st.metric(label="Sesgo", value=f"{stats['Sesgo']:.2f}")
-        with cols[1]:
-            st.metric(label="Curtosis", value=f"{stats['Curtosis']:.2f}")
-        with cols[2]:
-            st.metric(label=f"VaR (5%)", value=f"{stats['VaR (5%)']:.2f}")
-
-        cols = st.columns(3)
-        with cols[0]:
-            st.metric(label="CVaR (5%)", value=f"{stats['CVaR (5%)']:.2f}")
-        with cols[1]:
-            st.metric(label="Sortino Ratio", value=f"{stats['Sortino Ratio']:.2f}")
-        with cols[2]:
-            st.metric(label="Máximo Drawdown", value=f"{stats['Máximo Drawdown']:.2%}")
+        for label, value in stats_iguales.items():
+            st.markdown(render_metric(label, f"{value:.2f}", background_color="#66FF66", text_color="black"), unsafe_allow_html=True)
 
     
     # Comparación Visual entre Portafolios
