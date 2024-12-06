@@ -540,17 +540,36 @@ with tab3:
             mode='lines',
             name=etf
         ))
-
+    
     fig.update_layout(
-        title="Comparación de Precios Normalizados",
-        xaxis_title="Fecha",
-        yaxis_title="Precio Normalizado",
+        title=dict(text="Comparación de Precios Normalizados", font=dict(color='white')),
+        xaxis=dict(
+            title="Fecha",
+            titlefont=dict(color='white'),
+            tickfont=dict(color='white'),
+            showgrid=False,
+            linecolor='white',
+            tickcolor='white'
+        ),
+        yaxis=dict(
+            title="Precio Normalizado",
+            titlefont=dict(color='white'),
+            tickfont=dict(color='white'),
+            showgrid=False,
+            linecolor='white',
+            tickcolor='white'
+        ),
         hovermode="x unified",
         plot_bgcolor='#1D1E2C',
         paper_bgcolor='#1D1E2C',
-        font=dict(color='white')
+        font=dict(color='white'),
+        legend=dict(
+            font=dict(color='white'),
+            bgcolor='#1D1E2C'
+        )
     )
     st.plotly_chart(fig)
+
 
     # Backtesting
     st.subheader("Backtesting")
@@ -616,12 +635,30 @@ with tab3:
 
     fig_bt.update_layout(
         title=dict(text="Rendimiento Acumulado", font=dict(color='white')),
-        xaxis=dict(title="Fecha", titlefont=dict(color='white'), tickfont=dict(color='white')),
-        yaxis=dict(title="Rendimiento Acumulado", titlefont=dict(color='white'), tickfont=dict(color='white')),
+        xaxis=dict(
+            title="Fecha",
+            titlefont=dict(color='white'),
+            tickfont=dict(color='white'),
+            showgrid=False,
+            linecolor='white',
+            tickcolor='white'
+        ),
+        yaxis=dict(
+            title="Rendimiento Acumulado",
+            titlefont=dict(color='white'),
+            tickfont=dict(color='white'),
+            showgrid=False,
+            linecolor='white',
+            tickcolor='white'
+        ),
         hovermode="x unified",
         plot_bgcolor='#1D1E2C',
         paper_bgcolor='#1D1E2C',
-        font=dict(color='white')
+        font=dict(color='white'),
+        legend=dict(
+            font=dict(color='white'),
+            bgcolor='#1D1E2C'
+        )
     )
     st.plotly_chart(fig_bt)
 
