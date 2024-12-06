@@ -698,58 +698,64 @@ with tab3:
     def render_metric(label, value, background_color, text_color="white"):
         return f"""
         <div style="background-color: {background_color}; color: {text_color}; padding: 10px; 
-                    border-radius: 10px; text-align: center; margin-bottom: 10px;">
+                border-radius: 10px; text-align: center; margin-bottom: 10px;">
             <h4 style="margin: 0;">{label}</h4>
             <p style="margin: 0; font-size: 24px; font-weight: bold;">{value}</p>
         </div>
         """
 
-    # Columnas principales
-    col1, col2 = st.columns(2)
+    # Primera fila: Máximo Sharpe y Mínima Volatilidad (en 3 columnas cada uno)
+    st.markdown("#### Máximo Sharpe y Mínima Volatilidad")
 
-    # Columna 1: Máximo Sharpe y Mínima Volatilidad
+    # Máximo Sharpe en 3 columnas
+    col1, col2, col3 = st.columns(3)
+    stats = stats_sharpe
     with col1:
-        # Máximo Sharpe
-        st.markdown("#### Máximo Sharpe")
-        for label, value in stats_sharpe.items():
+        for label, value in list(stats.items())[:3]:  # Primeras 3 métricas
+            st.markdown(render_metric(label, f"{value:.2f}", background_color="#FF6666"), unsafe_allow_html=True)
+    with col2:
+        for label, value in list(stats.items())[3:6]:  # Siguientes 3 métricas
+            st.markdown(render_metric(label, f"{value:.2f}", background_color="#FF6666"), unsafe_allow_html=True)
+    with col3:
+        for label, value in list(stats.items())[6:]:  # Últimas métricas
             st.markdown(render_metric(label, f"{value:.2f}", background_color="#FF6666"), unsafe_allow_html=True)
 
-        # Mínima Volatilidad
-        st.markdown("#### Mínima Volatilidad")
-        for label, value in stats_volatilidad.items():
+    # Mínima Volatilidad en 3 columnas
+    st.markdown("#### Mínima Volatilidad")
+    col1, col2, col3 = st.columns(3)
+    stats = stats_volatilidad
+    with col1:
+        for label, value in list(stats.items())[:3]:  # Primeras 3 métricas
+            st.markdown(render_metric(label, f"{value:.2f}", background_color="#6666FF"), unsafe_allow_html=True)
+    with col2:
+        for label, value in list(stats.items())[3:6]:  # Siguientes 3 métricas
+            st.markdown(render_metric(label, f"{value:.2f}", background_color="#6666FF"), unsafe_allow_html=True)
+    with col3:
+        for label, value in list(stats.items())[6:]:  # Últimas métricas
             st.markdown(render_metric(label, f"{value:.2f}", background_color="#6666FF"), unsafe_allow_html=True)
 
-    # Columna 2: Mínima Volatilidad (Rendimiento 10%) y Pesos Iguales
+    # Segunda fila: Mínima Volatilidad (Rendimiento 10%) y Pesos Iguales (en 2 columnas cada uno)
+    st.markdown("#### Mínima Volatilidad (Rendimiento 10%) y Pesos Iguales")
+
+    # Mínima Volatilidad (Rendimiento 10%)
+    col1, col2 = st.columns(2)
+    stats = stats_rendimiento
+    with col1:
+        for label, value in list(stats.items())[:4]:  # Primeras 4 métricas
+            st.markdown(render_metric(label, f"{value:.2f}", background_color="#FFFF66", text_color="black"), unsafe_allow_html=True)
     with col2:
-        # Mínima Volatilidad (Rendimiento 10%)
-        st.markdown("#### Mínima Volatilidad (Rendimiento 10%)")
-        for label, value in stats_rendimiento.items():
+        for label, value in list(stats.items())[4:]:  # Últimas métricas
             st.markdown(render_metric(label, f"{value:.2f}", background_color="#FFFF66", text_color="black"), unsafe_allow_html=True)
 
-        # Pesos Iguales
-        st.markdown("#### Pesos Iguales")
-        for label, value in stats_iguales.items():
+    # Pesos Iguales
+    col1, col2 = st.columns(2)
+    stats = stats_iguales
+    with col1:
+        for label, value in list(stats.items())[:4]:  # Primeras 4 métricas
             st.markdown(render_metric(label, f"{value:.2f}", background_color="#66FF66", text_color="black"), unsafe_allow_html=True)
-
-    
-    # Comparación Visual entre Portafolios
-    st.markdown("## Comparación Visual entre Portafolios")
-    fig = go.Figure()
-    fig.add_trace(go.Bar(
-        x=["Máximo Sharpe", "Mínima Volatilidad", "Pesos Iguales"],
-        y=[stats_sharpe['Ratio de Sharpe'], stats_volatilidad['Ratio de Sharpe'], stats_iguales['Ratio de Sharpe']],
-        name="Ratio de Sharpe",
-        marker_color=['#FF5733', '#33FF57', '#3357FF']
-    ))
-    fig.update_layout(
-        title="Comparación de Ratio de Sharpe",
-        xaxis_title="Portafolios",
-        yaxis_title="Ratio de Sharpe",
-        plot_bgcolor='#1D1E2C',
-        paper_bgcolor='#1D1E2C',
-        font=dict(color='white')
-    )
-    st.plotly_chart(fig)
+    with col2:
+        for label, value in list(stats.items())[4:]:  # Últimas métricas
+            st.markdown(render_metric(label, f"{value:.2f}", background_color="#66FF66", text_color="black"), unsafe_allow_html=True)
 
 
 # Tab 4: Black-Litterman
