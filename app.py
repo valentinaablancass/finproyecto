@@ -532,6 +532,16 @@ with tab3:
     st.subheader("Precios Normalizados de los ETFs Seleccionados")
     precios_normalizados = datos / datos.iloc[0] * 100
 
+    
+    colores_etfs = {
+    'LQD': '#FF5733',
+    'EMB': '#33FF57',
+    'SPY': '#5733FF',
+    'EMXC': '#FFD700',
+    'IAU': '#00FFFF'
+    }
+
+    
     fig = go.Figure()
     for etf in etfs:
         fig.add_trace(go.Scatter(
@@ -539,7 +549,9 @@ with tab3:
             y=precios_normalizados[etf],
             mode='lines',
             name=etf
+            line=dict(color=colores_etfs[etf])
         ))
+        
     
     fig.update_layout(
         title=dict(text="Comparación de Precios Normalizados", font=dict(color='white')),
@@ -625,33 +637,49 @@ with tab3:
     bt_rendimiento, stats_rendimiento = backtesting_portafolio(rendimientos, pesos_rendimiento, inicio, fin)
     bt_iguales, stats_iguales = backtesting_portafolio(rendimientos, pesos_iguales, inicio, fin)
 
-    # Gráfica de rendimiento acumulado
+    # Gráfica de Rendimiento Acumulado
     st.subheader("Rendimiento Acumulado")
     fig_bt = go.Figure()
-    fig_bt.add_trace(go.Scatter(x=bt_sharpe.index, y=bt_sharpe, mode='lines', name="Máximo Sharpe"))
-    fig_bt.add_trace(go.Scatter(x=bt_volatilidad.index, y=bt_volatilidad, mode='lines', name="Mínima Volatilidad"))
-    fig_bt.add_trace(go.Scatter(x=bt_rendimiento.index, y=bt_rendimiento, mode='lines', name="Mínima Volatilidad (Rendimiento 10%)"))
-    fig_bt.add_trace(go.Scatter(x=bt_iguales.index, y=bt_iguales, mode='lines', name="Pesos Iguales"))
-
+    fig_bt.add_trace(go.Scatter(
+        x=bt_sharpe.index,
+        y=bt_sharpe,
+        mode='lines',
+        name="Máximo Sharpe",
+        line=dict(color='#FF5733')
+    ))
+    fig_bt.add_trace(go.Scatter(
+        x=bt_volatilidad.index,
+        y=bt_volatilidad,
+        mode='lines',
+        name="Mínima Volatilidad",
+        line=dict(color='#33FF57')
+    ))
+    fig_bt.add_trace(go.Scatter(
+        x=bt_rendimiento.index,
+        y=bt_rendimiento,
+        mode='lines',
+        name="Mínima Volatilidad (Rendimiento 10%)",
+        line=dict(color='#5733FF')
+    ))
+    fig_bt.add_trace(go.Scatter(
+        x=bt_iguales.index,
+        y=bt_iguales,
+        mode='lines',
+        name="Pesos Iguales",
+        line=dict(color='#FFD700')
+    ))
     fig_bt.update_layout(
         title=dict(text="Rendimiento Acumulado", font=dict(color='white')),
         xaxis=dict(
             title="Fecha",
             titlefont=dict(color='white'),
-            tickfont=dict(color='white'),
-            showgrid=False,
-            linecolor='white',
-            tickcolor='white'
+            tickfont=dict(color='white')
         ),
         yaxis=dict(
             title="Rendimiento Acumulado",
             titlefont=dict(color='white'),
-            tickfont=dict(color='white'),
-            showgrid=False,
-            linecolor='white',
-            tickcolor='white'
+            tickfont=dict(color='white')
         ),
-        hovermode="x unified",
         plot_bgcolor='#1D1E2C',
         paper_bgcolor='#1D1E2C',
         font=dict(color='white'),
