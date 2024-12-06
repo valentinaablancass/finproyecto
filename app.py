@@ -700,7 +700,7 @@ with tab3:
     # Columna 1: Máximo Sharpe y Mínima Volatilidad
     with col1:
         st.markdown("#### Máximo Sharpe y Mínima Volatilidad")
-        style_metric_cards(background_color="#FFFF66", border_left_color="#FFD700")  # Fondo amarillo
+        style_metric_cards(background_color="#d81159", border_left_color="#006ba6") 
         for nombre, stats in [("Máximo Sharpe", stats_sharpe), ("Mínima Volatilidad", stats_volatilidad)]:
             st.markdown(f"**{nombre}:**")
             cols = st.columns(3)
@@ -710,7 +710,7 @@ with tab3:
                 st.metric(label="Volatilidad Anualizada", value=f"{stats['Volatilidad Anualizada']:.2f}")
             with cols[2]:
                 st.metric(label="Ratio de Sharpe", value=f"{stats['Ratio de Sharpe']:.2f}")
-        
+                
             cols = st.columns(3)
             with cols[0]:
                 st.metric(label="Sesgo", value=f"{stats['Sesgo']:.2f}")
@@ -730,7 +730,7 @@ with tab3:
     # Columna 2: Mínima Volatilidad (Rendimiento 10%) y Pesos Iguales
     with col2:
         st.markdown("#### Mínima Volatilidad (Rendimiento 10%) y Pesos Iguales")
-        style_metric_cards(background_color="#FF6666", border_left_color="#FF4500")  # Fondo rojo
+        style_metric_cards(background_color="#006ba6", border_left_color="#d811590")  # Fondo rojo
         for nombre, stats in [("Mínima Volatilidad (Rendimiento 10%)", stats_rendimiento), ("Pesos Iguales", stats_iguales)]:
             st.markdown(f"**{nombre}:**")
             cols = st.columns(3)
