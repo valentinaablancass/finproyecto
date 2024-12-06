@@ -713,11 +713,12 @@ with tab3:
         # Máximo Sharpe
         st.markdown("#### Máximo Sharpe")
         stats = stats_sharpe
-        for i in range(0, len(stats), 3):  # Dividir en filas de 3 métricas
+        # Dividir en filas de 3 métricas
+        for i in range(0, len(stats), 3):  
             cols = st.columns(3)
             for col, (label, value) in zip(cols, list(stats.items())[i:i+3]):
                 with col:
-                    st.markdown(render_metric(label, f"{value:.2f}", background_color="#006ba6", border_left_color="#d81159"), unsafe_allow_html=True)
+                    st.markdown(render_metric(label, f"{value:.2f}", background_color="#1F2C56", border_left_color="#F46197"), unsafe_allow_html=True)
 
         # Mínima Volatilidad
         st.markdown("#### Mínima Volatilidad")
@@ -746,7 +747,7 @@ with tab3:
             cols = st.columns(3)
             for col, (label, value) in zip(cols, list(stats.items())[i:i+3]):
                 with col:
-                    st.markdown(render_metric(label, f"{value:.2f}", background_color="#FF99CC", border_left_color="#FF66B2", text_color="black"), unsafe_allow_html=True)
+                    st.markdown(render_metric(label, f"{value:.2f}", background_color="#F46197C", border_left_color="#1F2C56", text_color="black"), unsafe_allow_html=True)
 
 
 # Tab 4: Black-Litterman
