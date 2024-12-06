@@ -747,7 +747,7 @@ with tab3:
             cols = st.columns(3)
             for col, (label, value) in zip(cols, list(stats.items())[i:i+3]):
                 with col:
-                    st.markdown(render_metric(label, f"{value:.2f}", background_color="#ef7a85", border_left_color="#1F2C56", text_color="black"), unsafe_allow_html=True)
+                    st.markdown(render_metric(label, f"{value:.2f}", background_color="#ef7a85", border_left_color="#ea638c", text_color="black"), unsafe_allow_html=True)
 
 
 # Tab 4: Black-Litterman
