@@ -694,54 +694,69 @@ with tab3:
     # Mostrar estadísticas
     st.markdown("### Métricas de Backtesting")
 
-    # Aplicar estilos personalizados para las métricas
-    style_metric_cards(background_color="#1F2C56", border_left_color="#F46197")
-    st.markdown(
-        """
-        <style>
-        .metric-box {
-            background-color: #1F2C56;
-            color: white;
-            padding: 20px;
-            border-radius: 10px;
-            text-align: center;
-            margin-bottom: 10px;
-            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.25);
-        }
-        </style>
-        """,
-        unsafe_allow_html=True
-    )
+    # Columnas principales
+    col1, col2 = st.columns(2)
 
-    # Iterar sobre las estadísticas de los portafolios
-    for nombre, stats in [("Máximo Sharpe", stats_sharpe), ("Mínima Volatilidad", stats_volatilidad), 
-                      ("Mínima Volatilidad (Rendimiento 10%)", stats_rendimiento), ("Pesos Iguales", stats_iguales)]:
-        st.markdown(f"**{nombre}:**")
-    
-        col1, col2, col3 = st.columns(3)
-        with col1:
-            st.metric(label="Rendimiento Anualizado", value=f"{stats['Rendimiento Anualizado']:.2f}")
-        with col2:
-            st.metric(label="Volatilidad Anualizada", value=f"{stats['Volatilidad Anualizada']:.2f}")
-        with col3:
-            st.metric(label="Ratio de Sharpe", value=f"{stats['Ratio de Sharpe']:.2f}")
-    
-        col4, col5, col6 = st.columns(3)
-        with col4:
-            st.metric(label="Sesgo", value=f"{stats['Sesgo']:.2f}")
-        with col5:
-            st.metric(label="Curtosis", value=f"{stats['Curtosis']:.2f}")
-        with col6:
-            st.metric(label=f"VaR (5%)", value=f"{stats['VaR (5%)']:.2f}")
+    # Columna 1: Máximo Sharpe y Mínima Volatilidad
+    with col1:
+        st.markdown("#### Máximo Sharpe y Mínima Volatilidad")
+        style_metric_cards(background_color="#FFFF66", border_left_color="#FFD700")  # Fondo amarillo
+        for nombre, stats in [("Máximo Sharpe", stats_sharpe), ("Mínima Volatilidad", stats_volatilidad)]:
+            st.markdown(f"**{nombre}:**")
+            cols = st.columns(3)
+            with cols[0]:
+                st.metric(label="Rendimiento Anualizado", value=f"{stats['Rendimiento Anualizado']:.2f}")
+            with cols[1]:
+                st.metric(label="Volatilidad Anualizada", value=f"{stats['Volatilidad Anualizada']:.2f}")
+            with cols[2]:
+                st.metric(label="Ratio de Sharpe", value=f"{stats['Ratio de Sharpe']:.2f}")
+        
+            cols = st.columns(3)
+            with cols[0]:
+                st.metric(label="Sesgo", value=f"{stats['Sesgo']:.2f}")
+            with cols[1]:
+                st.metric(label="Curtosis", value=f"{stats['Curtosis']:.2f}")
+            with cols[2]:
+                st.metric(label=f"VaR (5%)", value=f"{stats['VaR (5%)']:.2f}")
+        
+            cols = st.columns(3)
+            with cols[0]:
+                st.metric(label="CVaR (5%)", value=f"{stats['CVaR (5%)']:.2f}")
+            with cols[1]:
+                st.metric(label="Sortino Ratio", value=f"{stats['Sortino Ratio']:.2f}")
+            with cols[2]:
+                st.metric(label="Máximo Drawdown", value=f"{stats['Máximo Drawdown']:.2%}")
 
-        col7, col8, col9 = st.columns(3)
-        with col7:
-            st.metric(label="CVaR (5%)", value=f"{stats['CVaR (5%)']:.2f}")
-        with col8:
-            st.metric(label="Sortino Ratio", value=f"{stats['Sortino Ratio']:.2f}")
-        with col9:
-            st.metric(label="Máximo Drawdown", value=f"{stats['Máximo Drawdown']:.2%}")
-    
+    # Columna 2: Mínima Volatilidad (Rendimiento 10%) y Pesos Iguales
+    with col2:
+        st.markdown("#### Mínima Volatilidad (Rendimiento 10%) y Pesos Iguales")
+        style_metric_cards(background_color="#FF6666", border_left_color="#FF4500")  # Fondo rojo
+        for nombre, stats in [("Mínima Volatilidad (Rendimiento 10%)", stats_rendimiento), ("Pesos Iguales", stats_iguales)]:
+            st.markdown(f"**{nombre}:**")
+            cols = st.columns(3)
+            with cols[0]:
+                st.metric(label="Rendimiento Anualizado", value=f"{stats['Rendimiento Anualizado']:.2f}")
+            with cols[1]:
+                st.metric(label="Volatilidad Anualizada", value=f"{stats['Volatilidad Anualizada']:.2f}")
+            with cols[2]:
+                st.metric(label="Ratio de Sharpe", value=f"{stats['Ratio de Sharpe']:.2f}")
+        
+            cols = st.columns(3)
+            with cols[0]:
+                st.metric(label="Sesgo", value=f"{stats['Sesgo']:.2f}")
+            with cols[1]:
+                st.metric(label="Curtosis", value=f"{stats['Curtosis']:.2f}")
+            with cols[2]:
+                st.metric(label=f"VaR (5%)", value=f"{stats['VaR (5%)']:.2f}")
+        
+            cols = st.columns(3)
+            with cols[0]:
+                st.metric(label="CVaR (5%)", value=f"{stats['CVaR (5%)']:.2f}")
+            with cols[1]:
+                st.metric(label="Sortino Ratio", value=f"{stats['Sortino Ratio']:.2f}")
+            with cols[2]:
+                st.metric(label="Máximo Drawdown", value=f"{stats['Máximo Drawdown']:.2%}")
+                
     # Comparación Visual entre Portafolios
     st.markdown("## Comparación Visual entre Portafolios")
     fig = go.Figure()
