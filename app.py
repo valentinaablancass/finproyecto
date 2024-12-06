@@ -741,6 +741,26 @@ with tab3:
             st.metric(label="Sortino Ratio", value=f"{stats['Sortino Ratio']:.2f}")
         with col9:
             st.metric(label="Máximo Drawdown", value=f"{stats['Máximo Drawdown']:.2%}")
+    
+    # Comparación Visual entre Portafolios
+    st.markdown("## Comparación Visual entre Portafolios")
+        fig = go.Figure()
+        fig.add_trace(go.Bar(
+            x=["Máximo Sharpe", "Mínima Volatilidad", "Pesos Iguales"],
+            y=[stats_sharpe['Ratio de Sharpe'], stats_volatilidad['Ratio de Sharpe'], stats_iguales['Ratio de Sharpe']],
+            name="Ratio de Sharpe",
+            marker_color=['#FF5733', '#33FF57', '#3357FF']
+    ))
+    fig.update_layout(
+        title="Comparación de Ratio de Sharpe",
+            xaxis_title="Portafolios",
+            yaxis_title="Ratio de Sharpe",
+            plot_bgcolor='#1D1E2C',
+            paper_bgcolor='#1D1E2C',
+            font=dict(color='white')
+    )
+    st.plotly_chart(fig)
+
 
 # Tab 4: Black-Litterman
 with tab4:
