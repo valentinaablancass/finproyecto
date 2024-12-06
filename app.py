@@ -701,7 +701,7 @@ with tab3:
                     border-radius: 10px; text-align: center; margin-bottom: 10px; 
                     border-left: 6px solid {border_left_color};">
             <h4 style="margin: 0;">{label}</h4>
-            <p style="margin: 0; font-size: 24px; font-weight: bold;">{value}</p>
+            <p style="margin: 0; font-size: 18px; font-weight: bold;">{value}</p>
         </div>
         """
 
