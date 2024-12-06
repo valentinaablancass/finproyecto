@@ -548,7 +548,7 @@ with tab3:
             x=precios_normalizados.index,
             y=precios_normalizados[etf],
             mode='lines',
-            name=etf
+            name=etf,
             line=dict(color=colores_etfs[etf])
         ))
         
