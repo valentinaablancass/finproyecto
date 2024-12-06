@@ -695,10 +695,11 @@ with tab3:
     st.markdown("### Métricas de Backtesting")
 
     # HTML para las métricas personalizadas
-    def render_metric(label, value, background_color, text_color="white"):
+    def render_metric(label, value, background_color, border_left_color, text_color="white"):
         return f"""
         <div style="background-color: {background_color}; color: {text_color}; padding: 10px; 
-                    border-radius: 10px; text-align: center; margin-bottom: 10px;">
+                    border-radius: 10px; text-align: center; margin-bottom: 10px; 
+                    border-left: 6px solid {border_left_color};">
             <h4 style="margin: 0;">{label}</h4>
             <p style="margin: 0; font-size: 24px; font-weight: bold;">{value}</p>
         </div>
@@ -716,7 +717,7 @@ with tab3:
             cols = st.columns(3)
             for col, (label, value) in zip(cols, list(stats.items())[i:i+3]):
                 with col:
-                    st.markdown(render_metric(label, f"{value:.2f}", background_color="#FF6666"), unsafe_allow_html=True)
+                    st.markdown(render_metric(label, f"{value:.2f}", background_color="#FF6666", border_left_color="#FF3333"), unsafe_allow_html=True)
 
         # Mínima Volatilidad
         st.markdown("#### Mínima Volatilidad")
@@ -725,7 +726,7 @@ with tab3:
             cols = st.columns(3)
             for col, (label, value) in zip(cols, list(stats.items())[i:i+3]):
                 with col:
-                    st.markdown(render_metric(label, f"{value:.2f}", background_color="#6666FF"), unsafe_allow_html=True)
+                    st.markdown(render_metric(label, f"{value:.2f}", background_color="#6666FF", border_left_color="#3333FF"), unsafe_allow_html=True)
 
     # Columna 2: Mínima Volatilidad (Rendimiento 10%) y Pesos Iguales (en 3 boxes por fila cada uno)
     with col2:
@@ -736,7 +737,7 @@ with tab3:
             cols = st.columns(3)
             for col, (label, value) in zip(cols, list(stats.items())[i:i+3]):
                 with col:
-                    st.markdown(render_metric(label, f"{value:.2f}", background_color="#FFFF66", text_color="black"), unsafe_allow_html=True)
+                    st.markdown(render_metric(label, f"{value:.2f}", background_color="#FFFF66", border_left_color="#FFCC00", text_color="black"), unsafe_allow_html=True)
 
         # Pesos Iguales
         st.markdown("#### Pesos Iguales")
@@ -745,7 +746,7 @@ with tab3:
             cols = st.columns(3)
             for col, (label, value) in zip(cols, list(stats.items())[i:i+3]):
                 with col:
-                    st.markdown(render_metric(label, f"{value:.2f}", background_color="#FF99CC"), unsafe_allow_html=True)
+                    st.markdown(render_metric(label, f"{value:.2f}", background_color="#FF99CC", border_left_color="#FF66B2", text_color="black"), unsafe_allow_html=True)
 
 
 # Tab 4: Black-Litterman
